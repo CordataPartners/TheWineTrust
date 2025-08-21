@@ -1,0 +1,149 @@
+{
+	"name": "MBE_Excel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureFileStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pDirectory": {
+				"type": "string"
+			},
+			"pFileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureFileStorageLocation"
+			},
+			"sheetIndex": 0,
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "First Name",
+				"type": "String"
+			},
+			{
+				"name": "Last Name",
+				"type": "String"
+			},
+			{
+				"name": "Company Name",
+				"type": "String"
+			},
+			{
+				"name": "Mailing Address 1",
+				"type": "String"
+			},
+			{
+				"name": "Mailing Address 2",
+				"type": "String"
+			},
+			{
+				"name": "Mailing City",
+				"type": "String"
+			},
+			{
+				"name": "Mailing State",
+				"type": "String"
+			},
+			{
+				"name": "Mailing Zip",
+				"type": "String"
+			},
+			{
+				"name": "Billing First Name",
+				"type": "String"
+			},
+			{
+				"name": "Billing Last Name",
+				"type": "String"
+			},
+			{
+				"name": "Billing Company Name",
+				"type": "String"
+			},
+			{
+				"name": "Billing Address 1",
+				"type": "String"
+			},
+			{
+				"name": "Billing Address 2",
+				"type": "String"
+			},
+			{
+				"name": "Billing City",
+				"type": "String"
+			},
+			{
+				"name": "Billing State",
+				"type": "String"
+			},
+			{
+				"name": "Billing Zip",
+				"type": "String"
+			},
+			{
+				"name": "Phone",
+				"type": "String"
+			},
+			{
+				"name": "Email",
+				"type": "String"
+			},
+			{
+				"name": "Residential Address (Y/N)",
+				"type": "String"
+			},
+			{
+				"name": "Leg1 Master Tracking #",
+				"type": "String"
+			},
+			{
+				"name": "Leg1 Package Tracking #",
+				"type": "String"
+			},
+			{
+				"name": "Last Trace",
+				"type": "String"
+			},
+			{
+				"name": "Franchisee Code",
+				"type": "String"
+			},
+			{
+				"name": "No. Bottles",
+				"type": "String"
+			},
+			{
+				"name": "Winery of Origin",
+				"type": "String"
+			},
+			{
+				"name": "Weight",
+				"type": "String"
+			},
+			{
+				"name": "Leg2 Tracking Number",
+				"type": "String"
+			},
+			{
+				"name": "Record Check",
+				"type": "String"
+			},
+			{
+				"name": "Record Check GLS",
+				"type": "String"
+			},
+			{
+				"name": "Global Check",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

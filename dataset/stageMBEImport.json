@@ -1,0 +1,138 @@
+{
+	"name": "stageMBEImport",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureShippingDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "FirstName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanyName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MailingAddress1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MailingAddress2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MailingCity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MailingState",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MailingZip",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingFirstName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingLastName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingCompanyName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingAddress1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingAddress2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingCity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingState",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingZip",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Phone",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Email",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ResidentialAddress_YN",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Leg1MasterTracking#",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Leg1PackageTracking#",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastTrace",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FranchiseeCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NoBottles",
+				"type": "nvarchar"
+			},
+			{
+				"name": "WineryofOrigin",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Weight",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Leg2TrackingNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RecordCheck",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RecordCheckGLS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GlobalCheck",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stageMBEImport"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

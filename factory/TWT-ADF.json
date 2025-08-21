@@ -1,0 +1,9 @@
+{
+	"name": "TWT-ADF",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "7b1e664f-f044-4da0-bf0f-6072ff17acde",
+		"tenantId": "22d31904-1635-4de8-95da-cd47b8e0aaa9"
+	}
+}
