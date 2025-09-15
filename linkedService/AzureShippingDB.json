@@ -1,0 +1,17 @@
+{
+	"name": "AzureShippingDB",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "shippingsqlserver.database.windows.net",
+			"database": "Shipping_Data",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "twtadmin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDZFMkMzNERGLTU1RjYtNDhBQS04NTJELTM1RDJGRDE5MjhERl8wMWFiYzI0ZS0xZmY0LTQ5ZTgtYjNiMy0wNWE0NzAxMjkwM2YiDQp9"
+		}
+	}
+}
