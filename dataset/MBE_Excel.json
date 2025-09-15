@@ -6,11 +6,16 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"pDirectory": {
+			"p_folder": {
+				"type": "string",
+				"defaultValue": "sftp-root/FROM MBE TO GLS"
+			},
+			"p_file": {
 				"type": "string"
 			},
-			"pFileName": {
-				"type": "string"
+			"p_sheet": {
+				"type": "string",
+				"defaultValue": "Foglio4"
 			}
 		},
 		"annotations": [],
