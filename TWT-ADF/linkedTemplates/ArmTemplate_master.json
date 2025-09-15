@@ -1,0 +1,98 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "TWT-ADF"
+		},
+		"AzureFileStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureFileStorage1'"
+		},
+		"AzureShippingDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureShippingDB'"
+		},
+		"MBE_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MBE'"
+		},
+		"AzureShippingDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "shippingsqlserver.database.windows.net"
+		},
+		"AzureShippingDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Shipping_Data"
+		},
+		"AzureShippingDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "twtadmin"
+		},
+		"MBE_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "ftp.mbe.it"
+		},
+		"MBE_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "glswine"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "TWT-ADF_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureFileStorage1_connectionString": {
+						"value": "[parameters('AzureFileStorage1_connectionString')]"
+					},
+					"AzureShippingDB_password": {
+						"value": "[parameters('AzureShippingDB_password')]"
+					},
+					"MBE_password": {
+						"value": "[parameters('MBE_password')]"
+					},
+					"AzureShippingDB_properties_typeProperties_server": {
+						"value": "[parameters('AzureShippingDB_properties_typeProperties_server')]"
+					},
+					"AzureShippingDB_properties_typeProperties_database": {
+						"value": "[parameters('AzureShippingDB_properties_typeProperties_database')]"
+					},
+					"AzureShippingDB_properties_typeProperties_userName": {
+						"value": "[parameters('AzureShippingDB_properties_typeProperties_userName')]"
+					},
+					"MBE_properties_typeProperties_host": {
+						"value": "[parameters('MBE_properties_typeProperties_host')]"
+					},
+					"MBE_properties_typeProperties_userName": {
+						"value": "[parameters('MBE_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

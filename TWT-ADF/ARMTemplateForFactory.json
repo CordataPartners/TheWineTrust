@@ -1,0 +1,1279 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "TWT-ADF"
+		},
+		"AzureFileStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureFileStorage1'"
+		},
+		"AzureShippingDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureShippingDB'"
+		},
+		"MBE_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MBE'"
+		},
+		"AzureShippingDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "shippingsqlserver.database.windows.net"
+		},
+		"AzureShippingDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Shipping_Data"
+		},
+		"AzureShippingDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "twtadmin"
+		},
+		"MBE_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "ftp.mbe.it"
+		},
+		"MBE_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "glswine"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/DownloadMBEFile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach_XLSX",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filter XLSX",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filter XLSX').output.Value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Truncate Stage Table",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureShippingDB",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "TRUNCATE TABLE dbo.stageMBEImport"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Copy XLSX from MBE",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Truncate Stage Table",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "ExcelSource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false,
+												"disableChunking": false
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"name": "First Name",
+														"type": "String"
+													},
+													"sink": {
+														"name": "FirstName",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Last Name",
+														"type": "String"
+													},
+													"sink": {
+														"name": "LastName",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Company Name",
+														"type": "String"
+													},
+													"sink": {
+														"name": "CompanyName",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Mailing Address 1",
+														"type": "String"
+													},
+													"sink": {
+														"name": "MailingAddress1",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Mailing Address 2",
+														"type": "String"
+													},
+													"sink": {
+														"name": "MailingAddress2",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Mailing City",
+														"type": "String"
+													},
+													"sink": {
+														"name": "MailingCity",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Mailing State",
+														"type": "String"
+													},
+													"sink": {
+														"name": "MailingState",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Mailing Zip",
+														"type": "String"
+													},
+													"sink": {
+														"name": "MailingZip",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing First Name",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingFirstName",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing Last Name",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingLastName",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing Company Name",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingCompanyName",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing Address 1",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingAddress1",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing Address 2",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingAddress2",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing City",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingCity",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing State",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingState",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Billing Zip",
+														"type": "String"
+													},
+													"sink": {
+														"name": "BillingZip",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Phone",
+														"type": "String"
+													},
+													"sink": {
+														"name": "Phone",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Email",
+														"type": "String"
+													},
+													"sink": {
+														"name": "Email",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Residential Address (Y/N)",
+														"type": "String"
+													},
+													"sink": {
+														"name": "ResidentialAddress_YN",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Leg1 Master Tracking #",
+														"type": "String"
+													},
+													"sink": {
+														"name": "Leg1MasterTracking#",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Leg1 Package Tracking #",
+														"type": "String"
+													},
+													"sink": {
+														"name": "Leg1PackageTracking#",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Last Trace",
+														"type": "String"
+													},
+													"sink": {
+														"name": "LastTrace",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Franchisee Code",
+														"type": "String"
+													},
+													"sink": {
+														"name": "FranchiseeCode",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "No. Bottles",
+														"type": "String"
+													},
+													"sink": {
+														"name": "NoBottles",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Winery of Origin",
+														"type": "String"
+													},
+													"sink": {
+														"name": "WineryofOrigin",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Weight",
+														"type": "String"
+													},
+													"sink": {
+														"name": "Weight",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Leg2 Tracking Number",
+														"type": "String"
+													},
+													"sink": {
+														"name": "Leg2TrackingNumber",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Record Check",
+														"type": "String"
+													},
+													"sink": {
+														"name": "RecordCheck",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Record Check GLS",
+														"type": "String"
+													},
+													"sink": {
+														"name": "RecordCheckGLS",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												},
+												{
+													"source": {
+														"name": "Global Check",
+														"type": "String"
+													},
+													"sink": {
+														"name": "GlobalCheck",
+														"type": "nvarchar",
+														"physicalType": "nvarchar"
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "MBE_Excel",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_folder": "sftp-root/FROM MBE TO GLS",
+												"p_file": "@item().name",
+												"p_sheet": "Foglio4"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "stageMBEImport",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "Merge Table",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Copy XLSX from MBE",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureShippingDB",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "exec dbo.spTWT_MergeExcelImport"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Truncate Again",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Merge Table",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureShippingDB",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "TRUNCATE TABLE dbo.stageMBEImport"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Archive File",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Truncate Again",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureFileStorageWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "MBE_FTP_Folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_subfolder": "@pipeline().parameters.pSftpFolder",
+												"p_file": "@item().name"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Azure_File_Process_Directory",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_subfolder": "@pipeline().parameters.pArchiveDateFolder",
+												"p_file": "@item().name"
+											}
+										}
+									]
+								},
+								{
+									"name": "Log FIle",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Archive File",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureShippingDB",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"parameters": [
+													{
+														"name": "FileName",
+														"type": "String",
+														"value": {
+															"value": "@item().name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													}
+												],
+												"type": "NonQuery",
+												"text": "dbo.spTWT_CheckFileLog"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Move to TAKEN",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Log FIle",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "SftpWriteSettings",
+												"copyBehavior": "PreserveHierarchy",
+												"operationTimeout": "01:00:00",
+												"useTempFileRename": true
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "MBE_FTP_Folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_subfolder": "@pipeline().parameters.pSftpFolder",
+												"p_file": "@item().name"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "MBE_FTP_Folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_subfolder": "@pipeline().parameters.pTakenSubfolder",
+												"p_file": "@item().name"
+											}
+										}
+									]
+								},
+								{
+									"name": "Delete from ROOT",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "Move to TAKEN",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "MBE_FTP_Folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_subfolder": "@pipeline().parameters.pSftpFolder",
+												"p_file": "@concat(pipeline().parameters.pSftpFolder, '/', item().name)"
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "SftpReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false,
+											"disableChunking": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Get FTP File List",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "MBE_FTP_Folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_subfolder": "@pipeline().parameters.pSftpFolder",
+									"p_file": "''"
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "SftpReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false,
+								"disableChunking": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Filter XLSX",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Get FTP File List",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get FTP File List').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@and(equals(item().type,'File'), endswith(item().name,'.xlsx'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pSftpFolder": {
+						"type": "string",
+						"defaultValue": "sftp-root/FROM MBE TO GLS"
+					},
+					"pTakenSubfolder": {
+						"type": "string",
+						"defaultValue": "sftp-root/FROM MBE TO GLS/TAKEN"
+					},
+					"pExcelSheet": {
+						"type": "string",
+						"defaultValue": "Foglio4"
+					},
+					"pArchiveDateFolder": {
+						"type": "string",
+						"defaultValue": "@formatDateTime(utcNow(),'yyyyMMdd')"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-08-21T22:47:58Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MBE_FTP_Folder')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureShippingDB')]",
+				"[concat(variables('factoryId'), '/datasets/MBE_Excel')]",
+				"[concat(variables('factoryId'), '/datasets/stageMBEImport')]",
+				"[concat(variables('factoryId'), '/datasets/Azure_File_Process_Directory')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Azure_File_Process_Directory')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureFileStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_subfolder": {
+						"type": "string"
+					},
+					"p_file": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureFileStorageLocation"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureFileStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MBE_Excel')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MBE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_folder": {
+						"type": "string",
+						"defaultValue": "sftp-root/FROM MBE TO GLS"
+					},
+					"p_file": {
+						"type": "string"
+					},
+					"p_sheet": {
+						"type": "string",
+						"defaultValue": "Foglio4"
+					}
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"location": {
+						"type": "SftpLocation",
+						"fileName": {
+							"value": "@dataset().p_file",
+							"type": "Expression"
+						},
+						"folderPath": "/sftp-root/FROM MBE TO GLS"
+					},
+					"sheetIndex": 0,
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "First Name",
+						"type": "String"
+					},
+					{
+						"name": "Last Name",
+						"type": "String"
+					},
+					{
+						"name": "Company Name",
+						"type": "String"
+					},
+					{
+						"name": "Mailing Address 1",
+						"type": "String"
+					},
+					{
+						"name": "Mailing Address 2",
+						"type": "String"
+					},
+					{
+						"name": "Mailing City",
+						"type": "String"
+					},
+					{
+						"name": "Mailing State",
+						"type": "String"
+					},
+					{
+						"name": "Mailing Zip",
+						"type": "String"
+					},
+					{
+						"name": "Billing First Name",
+						"type": "String"
+					},
+					{
+						"name": "Billing Last Name",
+						"type": "String"
+					},
+					{
+						"name": "Billing Company Name",
+						"type": "String"
+					},
+					{
+						"name": "Billing Address 1",
+						"type": "String"
+					},
+					{
+						"name": "Billing Address 2",
+						"type": "String"
+					},
+					{
+						"name": "Billing City",
+						"type": "String"
+					},
+					{
+						"name": "Billing State",
+						"type": "String"
+					},
+					{
+						"name": "Billing Zip",
+						"type": "String"
+					},
+					{
+						"name": "Phone",
+						"type": "String"
+					},
+					{
+						"name": "Email",
+						"type": "String"
+					},
+					{
+						"name": "Residential Address (Y/N)",
+						"type": "String"
+					},
+					{
+						"name": "Leg1 Master Tracking #",
+						"type": "String"
+					},
+					{
+						"name": "Leg1 Package Tracking #",
+						"type": "String"
+					},
+					{
+						"name": "Last Trace",
+						"type": "String"
+					},
+					{
+						"name": "Franchisee Code",
+						"type": "String"
+					},
+					{
+						"name": "No. Bottles",
+						"type": "String"
+					},
+					{
+						"name": "Winery of Origin",
+						"type": "String"
+					},
+					{
+						"name": "Weight",
+						"type": "String"
+					},
+					{
+						"name": "Leg2 Tracking Number",
+						"type": "String"
+					},
+					{
+						"name": "Record Check",
+						"type": "String"
+					},
+					{
+						"name": "Record Check GLS",
+						"type": "String"
+					},
+					{
+						"name": "Global Check",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MBE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MBE_FTP_Folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MBE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_subfolder": {
+						"type": "string"
+					},
+					"p_file": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "SftpLocation",
+						"folderPath": "/sftp-root/FROM MBE TO GLS"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MBE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/stageMBEImport')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureShippingDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FirstName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CompanyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MailingAddress1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MailingAddress2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MailingCity",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MailingState",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MailingZip",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingFirstName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingLastName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingCompanyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingAddress1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingAddress2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingCity",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingState",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillingZip",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Email",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ResidentialAddress_YN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Leg1MasterTracking#",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Leg1PackageTracking#",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastTrace",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FranchiseeCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NoBottles",
+						"type": "nvarchar"
+					},
+					{
+						"name": "WineryofOrigin",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Weight",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Leg2TrackingNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RecordCheck",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RecordCheckGLS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GlobalCheck",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "stageMBEImport"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureShippingDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureFileStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFileStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureFileStorage1_connectionString')]",
+					"fileShare": "adf-process"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureShippingDB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureShippingDB_properties_typeProperties_server')]",
+					"database": "[parameters('AzureShippingDB_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureShippingDB_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureShippingDB_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MBE')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Sftp",
+				"typeProperties": {
+					"host": "[parameters('MBE_properties_typeProperties_host')]",
+					"port": 22,
+					"skipHostKeyValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('MBE_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MBE_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
