@@ -1,0 +1,26 @@
+{
+	"name": "MBE_FTP_TrackingReport",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MBE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_subfolder": {
+				"type": "string"
+			},
+			"p_file": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"folderPath": "/sftp-root/FROM GLS TO MBE"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
