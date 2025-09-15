@@ -725,11 +725,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "MBE_Excel",
+						"referenceName": "MBE_FTP_Folder",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_folder": "@pipeline().parameters.pSftpFolder",
-							"p_sheet": "Foglio4"
+							"p_subfolder": "@pipeline().parameters.pSftpFolder",
+							"p_file": "''"
 						}
 					},
 					"fieldList": [
@@ -739,6 +739,9 @@
 						"type": "SftpReadSettings",
 						"enablePartitionDiscovery": false,
 						"disableChunking": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
 					}
 				}
 			},

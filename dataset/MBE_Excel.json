@@ -23,6 +23,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
+				"fileName": {
+					"value": "@dataset().p_file",
+					"type": "Expression"
+				},
 				"folderPath": "/sftp-root/FROM MBE TO GLS"
 			},
 			"sheetIndex": 0,
