@@ -2,7 +2,7 @@
 	"name": "MBE_Excel",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureFileStorage1",
+			"referenceName": "MBE",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
@@ -22,7 +22,8 @@
 		"type": "Excel",
 		"typeProperties": {
 			"location": {
-				"type": "AzureFileStorageLocation"
+				"type": "SftpLocation",
+				"folderPath": "/sftp-root/FROM MBE TO GLS"
 			},
 			"sheetIndex": 0,
 			"firstRowAsHeader": true
