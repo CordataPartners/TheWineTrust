@@ -507,72 +507,11 @@
 							}
 						},
 						{
-							"name": "Archive File",
-							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Truncate Again",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "SftpReadSettings",
-										"recursive": true,
-										"disableChunking": false
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureFileStorageWriteSettings",
-										"copyBehavior": "PreserveHierarchy"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "MBE_FTP_Folder",
-									"type": "DatasetReference",
-									"parameters": {
-										"p_subfolder": "@pipeline().parameters.pSftpFolder",
-										"p_file": "@item().name"
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "Azure_File_Process_Directory",
-									"type": "DatasetReference",
-									"parameters": {
-										"p_subfolder": "@pipeline().parameters.pArchiveDateFolder",
-										"p_file": "@item().name"
-									}
-								}
-							]
-						},
-						{
 							"name": "Log FIle",
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Archive File",
+									"activity": "Truncate Again",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -597,7 +536,10 @@
 											{
 												"name": "FileName",
 												"type": "String",
-												"value": "@item().name",
+												"value": {
+													"value": "@item().name",
+													"type": "Expression"
+												},
 												"direction": "Input"
 											}
 										],
@@ -633,6 +575,7 @@
 									"storeSettings": {
 										"type": "SftpReadSettings",
 										"recursive": true,
+										"deleteFilesAfterCompletion": true,
 										"disableChunking": false
 									},
 									"formatSettings": {
@@ -670,43 +613,6 @@
 									}
 								}
 							]
-						},
-						{
-							"name": "Delete from ROOT",
-							"type": "Delete",
-							"dependsOn": [
-								{
-									"activity": "Move to TAKEN",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "MBE_FTP_Folder",
-									"type": "DatasetReference",
-									"parameters": {
-										"p_subfolder": "@pipeline().parameters.pSftpFolder",
-										"p_file": "@concat(pipeline().parameters.pSftpFolder, '/', item().name)"
-									}
-								},
-								"enableLogging": false,
-								"storeSettings": {
-									"type": "SftpReadSettings",
-									"recursive": false,
-									"enablePartitionDiscovery": false,
-									"disableChunking": false
-								}
-							}
 						}
 					]
 				}
@@ -737,6 +643,7 @@
 					],
 					"storeSettings": {
 						"type": "SftpReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false,
 						"disableChunking": false
 					},
