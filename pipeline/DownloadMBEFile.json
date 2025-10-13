@@ -534,7 +534,7 @@
 									{
 										"parameters": [
 											{
-												"name": "Path",
+												"name": "@Path",
 												"type": "String",
 												"value": {
 													"value": "@item().name",
