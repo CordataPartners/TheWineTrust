@@ -5,9 +5,6 @@
 		"factoryName": {
 			"value": "TWT-ADF"
 		},
-		"AzureFileStorage1_connectionString": {
-			"value": ""
-		},
 		"AzureShippingDB_password": {
 			"value": ""
 		},

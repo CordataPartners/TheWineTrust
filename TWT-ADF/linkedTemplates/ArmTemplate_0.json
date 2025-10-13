@@ -7,10 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "TWT-ADF"
 		},
-		"AzureFileStorage1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureFileStorage1'"
-		},
 		"AzureShippingDB_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureShippingDB'"
@@ -44,20 +40,6 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureFileStorage1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureFileStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureFileStorage1_connectionString')]",
-					"fileShare": "adf-process"
-				}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureShippingDB')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -1005,7 +987,7 @@
 											{
 												"parameters": [
 													{
-														"name": "FileName",
+														"name": "Path",
 														"type": "String",
 														"value": {
 															"value": "@item().name",
@@ -1015,7 +997,7 @@
 													}
 												],
 												"type": "NonQuery",
-												"text": "dbo.spTWT_CheckFileLog"
+												"text": "exec dbo.spTWT_CheckFileLog @Path = @Path"
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -1045,7 +1027,7 @@
 											"type": "BinarySource",
 											"storeSettings": {
 												"type": "SftpReadSettings",
-												"recursive": true,
+												"recursive": false,
 												"deleteFilesAfterCompletion": true,
 												"disableChunking": false
 											},
@@ -1114,7 +1096,7 @@
 							],
 							"storeSettings": {
 								"type": "SftpReadSettings",
-								"recursive": true,
+								"recursive": false,
 								"enablePartitionDiscovery": false,
 								"disableChunking": false
 							},

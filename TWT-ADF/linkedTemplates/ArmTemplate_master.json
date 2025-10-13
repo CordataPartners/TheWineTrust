@@ -7,10 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "TWT-ADF"
 		},
-		"AzureFileStorage1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureFileStorage1'"
-		},
 		"AzureShippingDB_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureShippingDB'"
@@ -65,9 +61,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"AzureFileStorage1_connectionString": {
-						"value": "[parameters('AzureFileStorage1_connectionString')]"
 					},
 					"AzureShippingDB_password": {
 						"value": "[parameters('AzureShippingDB_password')]"
