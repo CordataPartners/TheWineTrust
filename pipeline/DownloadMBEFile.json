@@ -534,7 +534,7 @@
 									{
 										"parameters": [
 											{
-												"name": "FileName",
+												"name": "Path",
 												"type": "String",
 												"value": {
 													"value": "@item().name",
@@ -544,7 +544,7 @@
 											}
 										],
 										"type": "NonQuery",
-										"text": "dbo.spTWT_CheckFileLog"
+										"text": "exec dbo.spTWT_CheckFileLog"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
