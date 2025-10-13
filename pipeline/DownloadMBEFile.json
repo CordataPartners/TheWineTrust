@@ -534,7 +534,7 @@
 									{
 										"parameters": [
 											{
-												"name": "@Path",
+												"name": "Path",
 												"type": "String",
 												"value": {
 													"value": "@item().name",
@@ -544,7 +544,7 @@
 											}
 										],
 										"type": "NonQuery",
-										"text": "exec dbo.spTWT_CheckFileLog"
+										"text": "exec dbo.spTWT_CheckFileLog @Path = @Path"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
@@ -574,7 +574,7 @@
 									"type": "BinarySource",
 									"storeSettings": {
 										"type": "SftpReadSettings",
-										"recursive": true,
+										"recursive": false,
 										"deleteFilesAfterCompletion": true,
 										"disableChunking": false
 									},
