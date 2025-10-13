@@ -500,7 +500,7 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": "TRUNCATE TABLE dbo.tmpUPS"
+										"text": "TRUNCATE TABLE dbo.stageMBEImport"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
