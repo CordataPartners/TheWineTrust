@@ -25,6 +25,18 @@
 		},
 		"MBE_properties_typeProperties_userName": {
 			"value": "glswine"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pSftpFolder": {
+			"value": "sftp-root/FROM MBE TO GLS"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pTakenSubfolder": {
+			"value": "sftp-root/FROM MBE TO GLS/TAKEN"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pExcelSheet": {
+			"value": "Foglio4"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pArchiveDateFolder": {
+			"value": "@formatDateTime(utcNow(),'yyyyMMdd')"
 		}
 	}
 }

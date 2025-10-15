@@ -34,6 +34,22 @@
 		"MBE_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "glswine"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pSftpFolder": {
+			"type": "string",
+			"defaultValue": "sftp-root/FROM MBE TO GLS"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pTakenSubfolder": {
+			"type": "string",
+			"defaultValue": "sftp-root/FROM MBE TO GLS/TAKEN"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pExcelSheet": {
+			"type": "string",
+			"defaultValue": "Foglio4"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pArchiveDateFolder": {
+			"type": "string",
+			"defaultValue": "@formatDateTime(utcNow(),'yyyyMMdd')"
 		}
 	},
 	"variables": {
@@ -1159,6 +1175,41 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Run ADF Pipeline')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "DownloadMBEFile",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"pSftpFolder": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pSftpFolder')]",
+							"pTakenSubfolder": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pTakenSubfolder')]",
+							"pExcelSheet": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pExcelSheet')]",
+							"pArchiveDateFolder": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pArchiveDateFolder')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 2,
+						"startTime": "2025-10-16T17:00:00",
+						"timeZone": "Eastern Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/DownloadMBEFile')]"
+			]
 		}
 	]
 }

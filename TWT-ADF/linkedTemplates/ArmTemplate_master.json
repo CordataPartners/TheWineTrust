@@ -35,6 +35,22 @@
 			"type": "string",
 			"defaultValue": "glswine"
 		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pSftpFolder": {
+			"type": "string",
+			"defaultValue": "sftp-root/FROM MBE TO GLS"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pTakenSubfolder": {
+			"type": "string",
+			"defaultValue": "sftp-root/FROM MBE TO GLS/TAKEN"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pExcelSheet": {
+			"type": "string",
+			"defaultValue": "Foglio4"
+		},
+		"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pArchiveDateFolder": {
+			"type": "string",
+			"defaultValue": "@formatDateTime(utcNow(),'yyyyMMdd')"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -82,6 +98,18 @@
 					},
 					"MBE_properties_typeProperties_userName": {
 						"value": "[parameters('MBE_properties_typeProperties_userName')]"
+					},
+					"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pSftpFolder": {
+						"value": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pSftpFolder')]"
+					},
+					"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pTakenSubfolder": {
+						"value": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pTakenSubfolder')]"
+					},
+					"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pExcelSheet": {
+						"value": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pExcelSheet')]"
+					},
+					"Run ADF Pipeline_properties_DownloadMBEFile_parameters_pArchiveDateFolder": {
+						"value": "[parameters('Run ADF Pipeline_properties_DownloadMBEFile_parameters_pArchiveDateFolder')]"
 					}
 				}
 			},
