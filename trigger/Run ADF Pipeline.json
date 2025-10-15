@@ -1,0 +1,30 @@
+{
+	"name": "Run ADF Pipeline",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "DownloadMBEFile",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"pSftpFolder": "sftp-root/FROM MBE TO GLS",
+					"pTakenSubfolder": "sftp-root/FROM MBE TO GLS/TAKEN",
+					"pExcelSheet": "Foglio4",
+					"pArchiveDateFolder": "@formatDateTime(utcNow(),'yyyyMMdd')"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 2,
+				"startTime": "2025-10-16T17:00:00",
+				"timeZone": "Eastern Standard Time"
+			}
+		}
+	}
+}
