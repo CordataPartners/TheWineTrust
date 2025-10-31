@@ -575,7 +575,7 @@
 									"storeSettings": {
 										"type": "SftpReadSettings",
 										"recursive": false,
-										"deleteFilesAfterCompletion": false,
+										"deleteFilesAfterCompletion": true,
 										"disableChunking": false
 									},
 									"formatSettings": {
@@ -599,7 +599,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
@@ -611,7 +611,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
