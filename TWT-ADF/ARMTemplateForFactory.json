@@ -659,8 +659,11 @@
 											"referenceName": "MBE_FTP_Folder",
 											"type": "DatasetReference",
 											"parameters": {
-												"p_subfolder": "@pipeline().parameters.pSftpFolder",
-												"p_file": "@item().name"
+												"p_subfolder": "/",
+												"p_file": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
 											}
 										}
 									],
@@ -669,8 +672,11 @@
 											"referenceName": "MBE_FTP_Folder",
 											"type": "DatasetReference",
 											"parameters": {
-												"p_subfolder": "@pipeline().parameters.pTakenSubfolder",
-												"p_file": "@item().name"
+												"p_subfolder": "TAKEN",
+												"p_file": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
 											}
 										}
 									]
@@ -1229,6 +1235,36 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/DownloadMBEFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MBE_FTP_TAKEN_Folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MBE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_subfolder": {
+						"type": "string"
+					},
+					"p_file": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "SftpLocation",
+						"folderPath": "/sftp-root/FROM MBE TO GLS/TAKEN"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MBE')]"
 			]
 		}
 	]
