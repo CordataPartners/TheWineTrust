@@ -598,6 +598,7 @@
 									"referenceName": "MBE_FTP_Folder",
 									"type": "DatasetReference",
 									"parameters": {
+										"p_subfolder": "/",
 										"p_file": {
 											"value": "@item().name",
 											"type": "Expression"
@@ -607,13 +608,10 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "MBE_FTP_TAKEN_Folder",
+									"referenceName": "MBE_FTP_Folder",
 									"type": "DatasetReference",
 									"parameters": {
-										"p_file": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
+										"p_subfolder": "TAKEN"
 									}
 								}
 							]
