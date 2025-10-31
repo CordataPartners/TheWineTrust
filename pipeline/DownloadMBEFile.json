@@ -598,18 +598,22 @@
 									"referenceName": "MBE_FTP_Folder",
 									"type": "DatasetReference",
 									"parameters": {
-										"p_subfolder": "@pipeline().parameters.pSftpFolder",
-										"p_file": "@item().name"
+										"p_file": {
+											"value": "@item()",
+											"type": "Expression"
+										}
 									}
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "MBE_FTP_Folder",
+									"referenceName": "MBE_FTP_TAKEN_Folder",
 									"type": "DatasetReference",
 									"parameters": {
-										"p_subfolder": "@pipeline().parameters.pTakenSubfolder",
-										"p_file": "@item().name"
+										"p_file": {
+											"value": "@item()",
+											"type": "Expression"
+										}
 									}
 								}
 							]
