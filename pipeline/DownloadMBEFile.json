@@ -611,7 +611,11 @@
 									"referenceName": "MBE_FTP_Folder",
 									"type": "DatasetReference",
 									"parameters": {
-										"p_subfolder": "TAKEN"
+										"p_subfolder": "TAKEN",
+										"p_file": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
 									}
 								}
 							]
