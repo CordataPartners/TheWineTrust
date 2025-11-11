@@ -575,7 +575,7 @@
 									"storeSettings": {
 										"type": "SftpReadSettings",
 										"recursive": false,
-										"deleteFilesAfterCompletion": true,
+										"deleteFilesAfterCompletion": false,
 										"disableChunking": false
 									},
 									"formatSettings": {
@@ -611,7 +611,7 @@
 									"referenceName": "MBE_FTP_Folder",
 									"type": "DatasetReference",
 									"parameters": {
-										"p_subfolder": "TAKEN",
+										"p_subfolder": "/TAKEN",
 										"p_file": {
 											"value": "@item().name",
 											"type": "Expression"
@@ -619,6 +619,43 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Delete Source After Move",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Move to TAKEN",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "MBE_FTP_Folder",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_subfolder": "/",
+										"p_file": "@item().name"
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "SftpReadSettings",
+									"recursive": false,
+									"enablePartitionDiscovery": false,
+									"disableChunking": false
+								}
+							}
 						}
 					]
 				}
