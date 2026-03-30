@@ -18,7 +18,14 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
-				"folderPath": "/sftp-root/FROM MBE TO GLS"
+				"fileName": {
+					"value": "@dataset().p_file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().p_subfolder",
+					"type": "Expression"
+				}
 			}
 		}
 	},
