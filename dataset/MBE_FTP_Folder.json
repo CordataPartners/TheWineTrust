@@ -19,7 +19,7 @@
 			"location": {
 				"type": "SftpLocation",
 				"fileName": {
-					"value": "@dataset().p_file",
+					"value": "@if(empty(dataset().p_file), null, dataset().p_file)",
 					"type": "Expression"
 				},
 				"folderPath": {
