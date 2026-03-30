@@ -659,7 +659,10 @@
 											"referenceName": "MBE_FTP_Folder",
 											"type": "DatasetReference",
 											"parameters": {
-												"p_subfolder": "/",
+												"p_subfolder": {
+													"value": "@pipeline().parameters.pSftpFolder",
+													"type": "Expression"
+												},
 												"p_file": {
 													"value": "@item().name",
 													"type": "Expression"
@@ -672,7 +675,10 @@
 											"referenceName": "MBE_FTP_Folder",
 											"type": "DatasetReference",
 											"parameters": {
-												"p_subfolder": "/TAKEN",
+												"p_subfolder": {
+													"value": "@concat(pipeline().parameters.pSftpFolder, '/TAKEN')",
+													"type": "Expression"
+												},
 												"p_file": {
 													"value": "@item().name",
 													"type": "Expression"
@@ -705,7 +711,10 @@
 											"referenceName": "MBE_FTP_Folder",
 											"type": "DatasetReference",
 											"parameters": {
-												"p_subfolder": "/",
+												"p_subfolder": {
+													"value": "@pipeline().parameters.pSftpFolder",
+													"type": "Expression"
+												},
 												"p_file": "@item().name"
 											}
 										},
