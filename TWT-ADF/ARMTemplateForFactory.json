@@ -738,7 +738,10 @@
 								"referenceName": "MBE_FTP_Folder",
 								"type": "DatasetReference",
 								"parameters": {
-									"p_subfolder": "@pipeline().parameters.pSftpFolder",
+									"p_subfolder": {
+										"value": "@concat('/', pipeline().parameters.pSftpFolder)",
+										"type": "Expression"
+									},
 									"p_file": "''"
 								}
 							},
